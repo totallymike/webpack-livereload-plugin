@@ -16,7 +16,13 @@ function LiveReloadPlugin(options) {
   this.lastChildHashes = [];
   this.protocol = this.options.protocol ? this.options.protocol + ':' : '';
   this.hostname = this.options.hostname || '" + location.hostname + "';
-  this.server = null;
+  if (this.options.server) {
+    this.server = this.options.server;
+    this.port = this.server.options.port;
+    servers[this.server.options.port] = this.server;
+  } else {
+    this.server = null;
+  }
 }
 
 function arraysEqual(a1, a2){
