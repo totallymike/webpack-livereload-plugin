@@ -12,7 +12,12 @@ function LiveReloadPlugin(options) {
   this.lastChildHashes = [];
   this.protocol = this.options.protocol ? this.options.protocol + ':' : '';
   this.hostname = this.options.hostname || '" + location.hostname + "';
-  this.server = null;
+  if (options.server) {
+    this.server = options.server;
+    servers[this.server.options.port] = this.server;
+  } else {
+    this.server = null;
+  }
 }
 
 function arraysEqual(a1, a2){
@@ -31,7 +36,7 @@ LiveReloadPlugin.prototype.start = function start(watching, cb) {
     cb();
   }
   else {
-    this.server = servers[port] = lr(this.options);
+    if (!this.server) this.server = servers[port] = lr(this.options);
     this.server.errorListener = function serverError(err) {
       console.error('Live Reload disabled: ' + err.message);
       if (err.code !== 'EADDRINUSE') {
